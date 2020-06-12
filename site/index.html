@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Site principal</title>
+    </head>
+    <body>
+        <main>
+            <iframe id="ifrm" width="100%" src="http://054cc41d47a7.ngrok.io" frameborder="0"></iframe>
+        </main>
+    </body>
+    <script>
+        // modified from same-domain version at www.dyn-web.com/tutorials/iframes/height/
+        function setIframeHeightCO(id, ht) {
+            var ifrm = document.getElementById(id);
+            ifrm.style.visibility = 'hidden';
+            // some IE versions need a bit added or scrollbar appears
+            ifrm.style.height = ht + 4 + "px";
+            ifrm.style.visibility = 'visible';
+        }
+        // iframed document sends its height using postMessage
+        function handleDocHeightMsg(e) {
+            // parse data
+            var data = JSON.parse(e.data);
+            // check data object
+            if (data['docHeight']) {
+                setIframeHeightCO('ifrm', data['docHeight']);
+            } else if (data['href']) {
+                setIframe('ifrm', data['href']);
+            }
+        }
+
+        // assign message handler
+        if (window.addEventListener) {
+            window.addEventListener('message', handleDocHeightMsg, false);
+        } else if (window.attachEvent) { // ie8
+            window.attachEvent('onmessage', handleDocHeightMsg);
+        }
+    </script>
+</html>
